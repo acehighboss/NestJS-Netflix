@@ -1,19 +1,26 @@
 import { Exclude, Expose, Transform } from "class-transformer";
-import { ChildEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, TableInheritance, UpdateDateColumn, VersionColumn } from "typeorm";
+import { ChildEntity, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, TableInheritance, UpdateDateColumn, VersionColumn } from "typeorm";
 import { BaseTable } from "../../common/entity/base-table.entity";
 import { MovieDetail } from "./movie-detail.entity";
 import { Director } from "src/director/entity/director.entity";
+import { Genre } from "src/genre/entities/genre.entity";
 
 @Entity()
 export class Movie extends BaseTable{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({
+        unique: true,
+    })
     title: string;
 
-    @Column()
-    genre: string;
+    @ManyToMany(
+        () => Genre,
+        genre => genre.movies,
+    )
+    @JoinTable()
+    genres: Genre[];
 
     @OneToOne(
         () => MovieDetail,
