@@ -161,8 +161,15 @@ export class MovieService {
     });
 
     newMovie.genres = newGenres;
+
+    await this.movieRepository.save(newMovie);
     
-    return newMovie;
+    return this.movieRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['detail', 'director', 'genres']
+    });
   }
 
   async remove(id: number){
